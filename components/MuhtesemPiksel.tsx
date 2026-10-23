@@ -5,9 +5,8 @@ import Controls from "@/components/Controls";
 import DropZone from "@/components/DropZone";
 import PixelPreview from "@/components/PixelPreview";
 import PixelStage, { type StageHandle, type StageStatus } from "@/components/PixelStage";
+import { useAssignment } from "@/components/useAssignment";
 import { buildParticles } from "@/lib/animate";
-import { rankAssign } from "@/lib/assign";
-import { rgbaToOklab } from "@/lib/color";
 import { DEFAULT_RESOLUTION, decodeImage, loadTarget, squarePixels, type Resolution } from "@/lib/image";
 import { strings } from "@/lib/strings";
 
@@ -43,12 +42,11 @@ export default function MuhtesemPiksel() {
   const sourcePixels = useMemo(() => (sourceImage ? squarePixels(sourceImage, R) : null), [sourceImage, R]);
   const colors = useMemo(() => (sourcePixels ? new Uint32Array(sourcePixels.slice().buffer) : null), [sourcePixels]);
 
-  const dest = useMemo(() => {
-    if (!sourcePixels || !targetPixels) return null;
-    return rankAssign(rgbaToOklab(sourcePixels), rgbaToOklab(targetPixels), R * R);
-  }, [sourcePixels, targetPixels, R]);
-
-  const particles = useMemo(() => (dest ? buildParticles(dest, R, seed) : null), [dest, R, seed]);
+  const { dest, progress } = useAssignment(sourcePixels, targetPixels, R, seed);
+  const particles = useMemo(
+    () => (dest && dest.length === R * R ? buildParticles(dest, R, seed) : null),
+    [dest, R, seed],
+  );
 
   const onFile = async (file: File) => {
     try {
@@ -80,6 +78,14 @@ export default function MuhtesemPiksel() {
           smoothing
           onStatus={setStatus}
         />
+        {progress !== null && (
+          <div className="absolute inset-x-0 bottom-0 flex flex-col gap-1 bg-black/60 px-4 py-3">
+            <span className="text-[11px] uppercase tracking-widest text-muted">{strings.computing}</span>
+            <div className="h-1 w-full overflow-hidden rounded bg-border">
+              <div className="h-full bg-accent transition-[width] duration-100" style={{ width: `${Math.round(progress * 100)}%` }} />
+            </div>
+          </div>
+        )}
         {!sourcePixels && (
           <div className="absolute inset-0 p-[12%]">
             <DropZone onFile={onFile} />

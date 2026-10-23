@@ -13,7 +13,7 @@ export async function GET(): Promise<Response> {
   const root = process.cwd();
   for (const { name, type } of CANDIDATES) {
     try {
-      const bytes = await readFile(path.join(root, name));
+      const bytes = await readFile(path.join(/*turbopackIgnore: true*/ root, name));
       return new Response(new Uint8Array(bytes), {
         headers: {
           "Content-Type": type,
