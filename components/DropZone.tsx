@@ -91,8 +91,10 @@ export default function DropZone({ onFile, compact = false }: Props) {
   );
 
   const overlay = dragging ? (
-    <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-black/70 text-lg text-foreground">
-      <div className="rounded-xl border-2 border-dashed border-accent px-10 py-8">{strings.dropActive}</div>
+    <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-paper/85">
+      <div className="display border-[3px] border-ink bg-mustard px-10 py-8 text-3xl shadow-[8px_8px_0_var(--ink)]">
+        {strings.dropActive}
+      </div>
     </div>
   ) : null;
 
@@ -115,10 +117,10 @@ export default function DropZone({ onFile, compact = false }: Props) {
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="flex aspect-square w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-panel/60 p-6 text-center transition-colors hover:border-accent"
+        className="flex h-full w-full flex-col items-center justify-center gap-3 border-[3px] border-dashed border-ink bg-panel p-6 text-center hover:bg-mustard"
       >
-        <span className="text-base">{strings.dropTitle}</span>
-        <span className="text-xs text-muted">{strings.dropHint}</span>
+        <span className="display text-2xl sm:text-3xl">{strings.dropTitle}</span>
+        <span className="max-w-xs text-sm font-medium text-ink-soft">{strings.dropHint}</span>
       </button>
     </>
   );

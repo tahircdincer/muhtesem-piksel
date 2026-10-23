@@ -18,19 +18,21 @@ npm run dev
 
 ## Controls
 
+The interface is in Turkish. All UI text lives in `lib/strings.ts`; replace its values to switch language.
+
 | Control | What it does |
 | --- | --- |
-| Play / Pause | Start or pause the transition (Space) |
-| Replay | Restart from the beginning (R) |
-| Reverse | Flip direction and play back toward the source image |
-| Show result | Jump straight to the finished target image |
-| Record | Record the transition to a 1080×1080 `.webm` (stops about 1 s after the end; click again to stop early) |
-| Speed | 0.25× to 3× (6 s at 1×) |
-| Dust | Strength of the arc, wind and jitter. 0 = straight lines |
-| Trails | Fade the previous frame instead of clearing, for a smeared cloud look |
-| Smoothing | Smooth or pixelated upscaling of the stage |
-| Resolution | 128, 192, 256 or 384 pixels square |
-| New seed | Re-roll the random seed (changes both the assignment and the motion) |
+| Oynat / Duraklat | Start or pause the transition (Space) |
+| Baştan | Restart from the beginning (R) |
+| Geri oynat | Flip direction and play back toward the source image |
+| Sonucu göster | Jump straight to the finished target image |
+| Kaydet | Record the transition to a 1080×1080 `.webm` (stops about 1 s after the end; click again to stop early) |
+| Hız | 0.25× to 3× (6 s at 1×) |
+| Toz | Strength of the arc, wind and jitter. 0 = straight lines |
+| İz bırak | Fade the previous frame instead of clearing, for a smeared cloud look |
+| Yumuşatma | Smooth or pixelated upscaling of the stage |
+| Çözünürlük | 128, 192, 256 or 384 pixels square |
+| Yeni tohum | Re-roll the random seed (changes both the assignment and the motion) |
 | H | Clean mode: hide everything but the stage, for screen recording |
 
 ## Converting recordings for Premiere Pro

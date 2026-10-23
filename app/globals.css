@@ -1,76 +1,129 @@
 @import "tailwindcss";
 
+/* Neo-brutalist, low-glare light theme. No pure white anywhere. */
 :root {
-  --background: #050506;
-  --foreground: #e7e7ea;
-  --muted: #8a8a94;
-  --panel: #111114;
-  --border: #24242a;
-  --accent: #d8b36a;
+  --paper: #dce2d6; /* page: soft sage-grey */
+  --panel: #eef1e8; /* raised surfaces */
+  --ink: #000000; /* borders, text, hard shadows */
+  --ink-soft: #3d4239; /* secondary text */
+  --iznik: #1e56b0; /* primary action, stage shadow */
+  --kaftan: #b3122b; /* record, errors */
+  --mustard: #e2b227; /* toggled on */
+  --stage: #050506; /* stage interior */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
+  --color-paper: var(--paper);
   --color-panel: var(--panel);
-  --color-border: var(--border);
-  --color-accent: var(--accent);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-iznik: var(--iznik);
+  --color-kaftan: var(--kaftan);
+  --color-mustard: var(--mustard);
+  --color-stage: var(--stage);
+  --font-sans: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-sans);
 }
 
+:focus-visible {
+  outline: 3px solid var(--iznik);
+  outline-offset: 3px;
+}
+
 input[type="range"] {
-  accent-color: var(--accent);
+  accent-color: var(--ink);
 }
 
 @layer components {
+  /* Heavy display type: extra-wide black Archivo. */
+  .display {
+    font-weight: 900;
+    font-stretch: 125%;
+    letter-spacing: -0.02em;
+    line-height: 0.88;
+  }
+
+  .slab {
+    border: 3px solid var(--ink);
+    background: var(--panel);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+
   .btn {
     display: inline-flex;
-    height: 2rem;
+    height: 2.5rem;
     align-items: center;
     justify-content: center;
-    gap: 0.375rem;
-    border-radius: 0.375rem;
-    border: 1px solid var(--border);
+    gap: 0.5rem;
+    border: 3px solid var(--ink);
     background: var(--panel);
-    padding: 0 0.75rem;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    color: var(--foreground);
+    padding: 0 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
     user-select: none;
     cursor: pointer;
-    transition: border-color 120ms, color 120ms, background-color 120ms;
+    transition: transform 80ms ease-out, box-shadow 80ms ease-out;
   }
   .btn:hover:not(:disabled) {
-    border-color: var(--muted);
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+  .btn:active:not(:disabled) {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--ink);
   }
   .btn:disabled {
     cursor: not-allowed;
-    opacity: 0.4;
+    color: var(--ink-soft);
+    box-shadow: none;
+    border-style: dashed;
+    opacity: 0.55;
   }
   .btn-primary {
-    border-color: color-mix(in oklab, var(--accent) 60%, transparent);
-    background: color-mix(in oklab, var(--accent) 15%, transparent);
-    color: var(--accent);
+    background: var(--iznik);
+    color: var(--panel);
   }
-  .btn-primary:hover:not(:disabled),
-  .btn-on:hover:not(:disabled) {
-    border-color: var(--accent);
+  .btn-primary:disabled {
+    background: var(--panel);
   }
   .btn-on {
-    border-color: color-mix(in oklab, var(--accent) 60%, transparent);
-    color: var(--accent);
+    background: var(--mustard);
+  }
+  .btn-record {
+    background: var(--kaftan);
+    color: var(--panel);
+  }
+
+  .kbd {
+    display: inline-flex;
+    min-width: 1.75rem;
+    height: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--ink);
+    background: var(--panel);
+    padding: 0 0.375rem;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 800;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
   }
 }

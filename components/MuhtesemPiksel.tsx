@@ -13,9 +13,7 @@ import { randomSeed } from "@/lib/rng";
 import { strings } from "@/lib/strings";
 
 type TargetState =
-  | { status: "loading" }
-  | { status: "error"; message: string }
-  | { status: "ready"; image: ImageBitmap };
+  { status: "loading" } | { status: "error"; message: string } | { status: "ready"; image: ImageBitmap };
 
 const DEFAULT_SETTINGS: Settings = {
   speed: 1,
@@ -61,10 +59,7 @@ export default function MuhtesemPiksel() {
     };
   }, []);
 
-  const targetPixels = useMemo(
-    () => (target.status === "ready" ? squarePixels(target.image, R) : null),
-    [target, R],
-  );
+  const targetPixels = useMemo(() => (target.status === "ready" ? squarePixels(target.image, R) : null), [target, R]);
   const sourcePixels = useMemo(() => (sourceImage ? squarePixels(sourceImage, R) : null), [sourceImage, R]);
   const colors = useMemo(() => (sourcePixels ? new Uint32Array(sourcePixels.slice().buffer) : null), [sourcePixels]);
 
@@ -166,89 +161,132 @@ export default function MuhtesemPiksel() {
     return () => clearTimeout(t);
   }, [showCleanHint]);
 
-  // --- layout ----------------------------------------------------------------
+  const stageEl = (
+    <PixelStage
+      ref={stage}
+      R={R}
+      particles={particles}
+      colors={colors}
+      idlePixels={sourcePixels}
+      speed={settings.speed}
+      dust={settings.dust}
+      trails={settings.trails}
+      smoothing={settings.smoothing}
+      onStatus={onStatus}
+    />
+  );
 
-  const stageSize = clean ? "w-[min(100vw,100vh)]" : "w-[min(92vw,calc(100vh-20rem))] min-w-64";
+  // --- layout ----------------------------------------------------------------
 
   return (
     <main
-      className={`flex flex-1 flex-col items-center ${clean ? "h-screen justify-center overflow-hidden" : "gap-4 p-4"}`}
+      className={
+        clean
+          ? "flex h-screen items-center justify-center overflow-hidden bg-stage"
+          : "mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-6 sm:px-8 sm:py-8"
+      }
     >
       {!clean && (
-        <header className="flex w-full max-w-3xl items-baseline justify-between gap-4">
-          <h1 className="text-base font-semibold tracking-tight">{strings.appName}</h1>
-          <p className="hidden text-[11px] text-muted sm:block">{strings.shortcuts}</p>
+        <header className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4 border-b-[3px] border-ink pb-5">
+          <div className="flex flex-col gap-3">
+            <h1 className="display text-[clamp(2.5rem,7vw,4.75rem)]">
+              {strings.appNameParts[0]}
+              <br />
+              <span className="inline-block bg-ink px-2 text-paper">{strings.appNameParts[1]}</span>
+            </h1>
+            <p className="max-w-md text-base font-medium text-ink-soft">{strings.tagline}</p>
+          </div>
+          <ul className="hidden flex-col gap-2 text-sm font-semibold md:flex">
+            {strings.shortcuts.map((s) => (
+              <li key={s.key} className="flex items-center gap-2">
+                <kbd className="kbd">{s.key}</kbd>
+                <span>{s.action}</span>
+              </li>
+            ))}
+          </ul>
         </header>
       )}
 
-      <div className={`relative aspect-square ${stageSize} overflow-hidden bg-background`}>
-        <PixelStage
-          ref={stage}
-          R={R}
-          particles={particles}
-          colors={colors}
-          idlePixels={sourcePixels}
-          speed={settings.speed}
-          dust={settings.dust}
-          trails={settings.trails}
-          smoothing={settings.smoothing}
-          onStatus={onStatus}
-        />
-        {!clean && progress !== null && (
-          <div className="absolute inset-x-0 bottom-0 flex flex-col gap-1 bg-black/60 px-4 py-3">
-            <span className="text-[11px] uppercase tracking-widest text-muted">{strings.computing}</span>
-            <div className="h-1 w-full overflow-hidden rounded bg-border">
-              <div className="h-full bg-accent" style={{ width: `${Math.round(progress * 100)}%` }} />
-            </div>
-          </div>
-        )}
-        {!sourcePixels && !clean && (
-          <div className="absolute inset-0 p-[12%]">
-            <DropZone onFile={onFile} />
-          </div>
-        )}
-        {clean && showCleanHint && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-4 text-center text-[11px] text-muted">
-            {strings.cleanModeHint}
-          </div>
-        )}
-      </div>
-
-      {!clean && (
-        <>
-          <Controls
-            ready={ready}
-            playing={status.playing}
-            direction={status.direction}
-            recording={recording}
-            canRecord={recordSupported}
-            seed={seed}
-            settings={settings}
-            onSettings={(patch) => setSettings((s) => ({ ...s, ...patch }))}
-            onToggle={() => stage.current?.toggle()}
-            onReplay={() => stage.current?.replay()}
-            onReverse={() => stage.current?.reverse()}
-            onShowEnd={() => stage.current?.showEnd()}
-            onNewSeed={() => setSeed(randomSeed())}
-            onRecord={onRecord}
+      <div className={clean ? "contents" : "grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]"}>
+        <div className={clean ? "contents" : "flex flex-col gap-6"}>
+          <div
+            className={
+              clean
+                ? "relative aspect-square w-[min(100vw,100vh)]"
+                : "relative aspect-square w-full max-w-[min(100%,calc(100vh-17rem))] border-[3px] border-ink bg-stage shadow-[12px_12px_0_var(--iznik)]"
+            }
           >
-            {sourcePixels && <DropZone onFile={onFile} compact />}
-          </Controls>
-
-          <div className="grid w-36 grid-cols-2 gap-2">
-            <PixelPreview label={strings.sourceLabel} pixels={sourcePixels} R={R} />
-            <PixelPreview label={strings.targetLabel} pixels={targetPixels} R={R}>
-              {target.status === "loading" ? "…" : target.status === "error" ? "!" : null}
-            </PixelPreview>
+            {stageEl}
+            {clean && showCleanHint && (
+              <div className="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center">
+                <span className="border-[3px] border-ink bg-mustard px-3 py-1.5 text-sm font-bold shadow-[4px_4px_0_var(--ink)]">
+                  {strings.cleanModeHint}
+                </span>
+              </div>
+            )}
+            {!clean && progress !== null && (
+              <div className="absolute inset-x-0 bottom-0 flex flex-col gap-2 border-t-[3px] border-ink bg-panel px-4 py-3">
+                <span className="text-sm font-bold">{strings.computing}</span>
+                <div className="h-4 w-full border-[3px] border-ink bg-paper">
+                  <div className="h-full bg-iznik" style={{ width: `${Math.round(progress * 100)}%` }} />
+                </div>
+              </div>
+            )}
+            {!clean && !sourcePixels && (
+              <div className="absolute inset-0 bg-paper p-[8%]">
+                <DropZone onFile={onFile} />
+              </div>
+            )}
           </div>
           {target.status === "error" && (
-            <p className="max-w-md text-center text-xs text-red-400">{target.message}</p>
+            <p className="border-[3px] border-ink border-l-[12px] border-l-kaftan bg-panel p-4 text-sm font-semibold">
+              {target.message}
+            </p>
           )}
-          {sourceError && <p className="text-xs text-red-400">{sourceError}</p>}
-        </>
-      )}
-      {/* Keep the drop/paste listeners alive in clean mode too. */}
-      {clean && <div className="hidden"><DropZone onFile={onFile} compact /></div>}
+          {sourceError && (
+            <p className="border-[3px] border-ink border-l-[12px] border-l-kaftan bg-panel p-4 text-sm font-semibold">
+              {sourceError}
+            </p>
+          )}
+        </div>
+
+        {clean ? (
+          // Keep the drop/paste listeners alive in clean mode too.
+          <div className="hidden">
+            <DropZone onFile={onFile} compact />
+          </div>
+        ) : (
+          <aside className="flex flex-col gap-6">
+            <Controls
+              ready={ready}
+              playing={status.playing}
+              direction={status.direction}
+              recording={recording}
+              canRecord={recordSupported}
+              seed={seed}
+              settings={settings}
+              onSettings={(patch) => setSettings((s) => ({ ...s, ...patch }))}
+              onToggle={() => stage.current?.toggle()}
+              onReplay={() => stage.current?.replay()}
+              onReverse={() => stage.current?.reverse()}
+              onShowEnd={() => stage.current?.showEnd()}
+              onNewSeed={() => setSeed(randomSeed())}
+              onRecord={onRecord}
+            >
+              <DropZone onFile={onFile} compact />
+            </Controls>
+
+            <div className="grid grid-cols-2 gap-5">
+              <PixelPreview label={strings.sourceLabel} pixels={sourcePixels} R={R}>
+                {strings.dropTitle}
+              </PixelPreview>
+              <PixelPreview label={strings.targetLabel} pixels={targetPixels} R={R}>
+                {target.status === "loading" ? strings.targetLoading : target.status === "error" ? "—" : null}
+              </PixelPreview>
+            </div>
+          </aside>
+        )}
+      </div>
     </main>
   );
 }

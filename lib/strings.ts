@@ -1,49 +1,59 @@
 // All UI text lives here. To translate, replace the values in this file
-// (keep the keys). Turkish is a one-file swap.
+// (keep the keys). Current language: Turkish.
+
+export const lang = "tr";
 
 export const strings = {
   appName: "MuhteşemPiksel",
-  tagline: "Every image already contains the face. Move the pixels.",
-  description:
-    "Rearranges the pixels of any image into a fixed target image.",
+  appNameParts: ["Muhteşem", "Piksel"],
+  tagline: "Her görselin içinde o yüz zaten var. Pikselleri yerine taşımak yeter.",
+  description: "Herhangi bir görselin kendi piksellerini sabit bir hedef görsele dönüştürür.",
 
-  sourceLabel: "Source",
-  targetLabel: "Target",
-  resultLabel: "Result",
+  sourceLabel: "Kaynak",
+  targetLabel: "Hedef",
+  resultLabel: "Sonuç",
 
-  targetLoading: "Loading target image…",
+  targetLoading: "Hedef görsel yükleniyor…",
   targetMissing:
-    "No target image found. Put sehzademustafa.png, sehzademustafa.jpeg or sehzademustafa.jpg in the project root and reload.",
-  targetLoadFailed: "Could not load the target image.",
+    "Hedef görsel bulunamadı. Proje klasörüne sehzademustafa.png, sehzademustafa.jpeg veya sehzademustafa.jpg koyup sayfayı yenileyin.",
+  targetLoadFailed: "Hedef görsel yüklenemedi. Dosyanın bozuk olmadığından emin olup sayfayı yenileyin.",
 
-  dropTitle: "Drop an image here",
-  dropHint: "or click to choose a file, or paste with Ctrl/Cmd+V",
-  dropActive: "Release to load",
-  imageLoadFailed: "That file could not be read as an image.",
+  dropTitle: "Bir görseli buraya bırakın",
+  dropHint: "ya da dosya seçmek için tıklayın, veya Ctrl/Cmd+V ile yapıştırın",
+  dropActive: "Bırakın, yüklensin",
+  imageLoadFailed: "Bu dosya görsel olarak okunamadı. PNG, JPEG veya WebP deneyin.",
 
-  computing: "Arranging pixels…",
-  computeDone: "Ready",
+  computing: "Pikseller yerleştiriliyor…",
+  computeDone: "Hazır",
 
-  play: "Play",
-  pause: "Pause",
-  replay: "Replay",
-  reverse: "Reverse",
-  forward: "Forward",
-  speed: "Speed",
-  dust: "Dust",
-  trails: "Trails",
-  smoothing: "Smoothing",
-  resolution: "Resolution",
-  newSeed: "New seed",
-  seed: "Seed",
-  loadImage: "Load image",
-  showResult: "Show result",
-  record: "Record",
-  recording: "Recording…",
-  recordUnsupported: "Recording is not supported in this browser.",
+  playback: "Oynatma",
+  look: "Görünüm",
+  image: "Görsel",
 
-  shortcuts: "Space play/pause · R replay · H hide controls",
-  cleanModeHint: "Press H to show controls",
+  play: "Oynat",
+  pause: "Duraklat",
+  replay: "Baştan",
+  reverse: "Geri oynat",
+  forward: "İleri oynat",
+  speed: "Hız",
+  dust: "Toz",
+  trails: "İz bırak",
+  smoothing: "Yumuşatma",
+  resolution: "Çözünürlük",
+  newSeed: "Yeni tohum",
+  seed: "Tohum",
+  loadImage: "Görsel yükle",
+  showResult: "Sonucu göster",
+  record: "Kaydet",
+  recording: "Kaydediliyor…",
+  recordUnsupported: "Bu tarayıcı kayıt özelliğini desteklemiyor.",
+
+  shortcuts: [
+    { key: "Boşluk", action: "oynat / duraklat" },
+    { key: "R", action: "baştan" },
+    { key: "H", action: "kontrolleri gizle" },
+  ],
+  cleanModeHint: "Kontrolleri göstermek için H tuşuna basın",
 } as const;
 
 export type Strings = typeof strings;

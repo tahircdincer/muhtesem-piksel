@@ -19,19 +19,19 @@ export default function PixelPreview({ label, pixels, R, children }: Props) {
   }, [pixels, R]);
 
   return (
-    <figure className="flex w-full flex-col gap-1.5">
-      <div className="relative aspect-square w-full overflow-hidden rounded-md border border-border bg-panel">
+    <figure className="flex w-full flex-col gap-2">
+      <div className="relative aspect-square w-full overflow-hidden border-[3px] border-ink bg-stage shadow-[4px_4px_0_var(--ink)]">
         {pixels ? (
           <canvas ref={ref} className="h-full w-full [image-rendering:pixelated]" />
         ) : (
-          <div className="flex h-full w-full items-center justify-center p-3 text-center text-xs text-muted">
+          <div className="flex h-full w-full items-center justify-center bg-panel p-2 text-center text-xs font-semibold">
             {children}
           </div>
         )}
       </div>
-      <figcaption className="text-[11px] uppercase tracking-widest text-muted">
+      <figcaption className="text-sm font-bold">
         {label}
-        {pixels ? ` · ${R}×${R}` : ""}
+        {pixels && <span className="font-medium text-ink-soft"> {R}×{R}</span>}
       </figcaption>
     </figure>
   );
