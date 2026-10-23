@@ -209,9 +209,11 @@ export default function PixelStage({
         direction.current = direction.current === 1 ? -1 : 1;
         play();
       },
+      // Jump to the finished result (always the target, whatever the direction).
       showEnd: () => {
         stop();
-        g.current = direction.current === 1 ? 1 : 0;
+        direction.current = 1;
+        g.current = 1;
         draw(0);
         emit();
       },
