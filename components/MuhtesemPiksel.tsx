@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import DropZone from "@/components/DropZone";
 import PixelPreview from "@/components/PixelPreview";
+import { applyPermutation, rankAssign } from "@/lib/assign";
+import { rgbaToOklab } from "@/lib/color";
 import { DEFAULT_RESOLUTION, decodeImage, loadTarget, squarePixels, type Resolution } from "@/lib/image";
 import { strings } from "@/lib/strings";
 
@@ -16,6 +18,7 @@ export default function MuhtesemPiksel() {
   const [sourceImage, setSourceImage] = useState<ImageBitmap | null>(null);
   const [sourceError, setSourceError] = useState<string | null>(null);
   const [R] = useState<Resolution>(DEFAULT_RESOLUTION);
+  const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -34,10 +37,21 @@ export default function MuhtesemPiksel() {
   );
   const sourcePixels = useMemo(() => (sourceImage ? squarePixels(sourceImage, R) : null), [sourceImage, R]);
 
+  const dest = useMemo(() => {
+    if (!sourcePixels || !targetPixels) return null;
+    return rankAssign(rgbaToOklab(sourcePixels), rgbaToOklab(targetPixels), R * R);
+  }, [sourcePixels, targetPixels, R]);
+
+  const resultPixels = useMemo(
+    () => (showResult && dest && sourcePixels ? applyPermutation(sourcePixels, dest) : null),
+    [showResult, dest, sourcePixels],
+  );
+
   const onFile = async (file: File) => {
     try {
       setSourceImage(await decodeImage(file));
       setSourceError(null);
+      setShowResult(false);
     } catch {
       setSourceError(strings.imageLoadFailed);
     }
@@ -50,7 +64,7 @@ export default function MuhtesemPiksel() {
         <p className="text-xs text-muted">{strings.tagline}</p>
       </header>
 
-      <div className="grid w-full max-w-2xl grid-cols-2 gap-4">
+      <div className="grid w-full max-w-3xl grid-cols-3 gap-4">
         {sourcePixels ? (
           <PixelPreview label={strings.sourceLabel} pixels={sourcePixels} R={R} />
         ) : (
@@ -62,9 +76,15 @@ export default function MuhtesemPiksel() {
         <PixelPreview label={strings.targetLabel} pixels={targetPixels} R={R}>
           {target.status === "loading" ? strings.targetLoading : target.status === "error" ? target.message : null}
         </PixelPreview>
+        <PixelPreview label={strings.resultLabel} pixels={resultPixels} R={R} />
       </div>
 
-      {sourcePixels && <DropZone onFile={onFile} compact />}
+      <div className="flex gap-2">
+        {sourcePixels && <DropZone onFile={onFile} compact />}
+        <button type="button" className="btn" disabled={!dest} onClick={() => setShowResult(true)}>
+          {strings.showResult}
+        </button>
+      </div>
       {sourceError && <p className="text-xs text-red-400">{sourceError}</p>}
     </main>
   );
