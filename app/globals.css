@@ -34,3 +34,15 @@ body {
 input[type="range"] {
   accent-color: var(--accent);
 }
+
+@layer components {
+  .btn {
+    @apply inline-flex h-8 items-center justify-center gap-1.5 rounded-md border border-border bg-panel px-3 text-xs text-foreground transition-colors select-none hover:border-muted disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-border;
+  }
+  .btn-primary {
+    @apply border-accent/60 bg-accent/15 text-accent hover:border-accent;
+  }
+  .btn-on {
+    @apply border-accent/60 text-accent;
+  }
+}
