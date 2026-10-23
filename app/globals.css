@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050506;
+  --foreground: #e7e7ea;
+  --muted: #8a8a94;
+  --panel: #111114;
+  --border: #24242a;
+  --accent: #d8b36a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-panel: var(--panel);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+input[type="range"] {
+  accent-color: var(--accent);
+}
